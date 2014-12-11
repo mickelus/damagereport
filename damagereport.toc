@@ -1,4 +1,4 @@
-## Interface: 30200
+## Interface: 60000
 ## Author: Mickelus
 ## Title: damagereport
 ## SavedVariablesPerCharacter:dmgrprtsv
