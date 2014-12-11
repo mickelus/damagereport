@@ -1,19 +1,35 @@
 dmgrprtsv = "UIErrorsFrame"
 local f = CreateFrame("Frame")
+local damageString = "%d damage dealt at %d dps"
+local timeMinString = "Combat lasted: %dm %ds"
+local timeSecString = "Combat lasted: %ds"
+local damage, time
+
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
-local damage, time 
+
 function f.PLAYER_REGEN_DISABLED()
-damage=GetStatistic(197)
-time=GetTime()
+    damage=GetStatistic(197)
+    time=GetTime()
 end
 function f.PLAYER_REGEN_ENABLED()
-time=GetTime()-time
-_G[dmgrprtsv]:AddMessage(((GetStatistic(197)-damage)>0) and ((GetStatistic(197)-damage).." damage dealt at "..(floor((GetStatistic(197)-damage)/time)).." dps"))
-_G[dmgrprtsv]:AddMessage("Combat lasted: "..((floor(time/60)>0) and (floor(time/60).."m "..(floor(time)%60).."s") or (floor(time).."s")))
+    time=GetTime()-time
+    if damage then
+        damage = GetStatistic(197)-damage
+    else
+        damage = GetStatistic(197)
+    end
+
+    if damage > 0 then
+        _G[dmgrprtsv]:AddMessage(damageString:format(damage, damage/time))
+    end
+
+    if time > 60 then
+        _G[dmgrprtsv]:AddMessage(timeMinString:format(time/60, time%60))
+    else
+        _G[dmgrprtsv]:AddMessage(timeSecString:format(time))
+    end
 end
 f:SetScript("OnEvent", function(self, event, ...)
-
-	self[event]()
-
+    self[event]()
 end)
